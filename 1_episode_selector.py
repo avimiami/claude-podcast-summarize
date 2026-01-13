@@ -9,8 +9,13 @@ import feedparser
 import pandas as pd
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta
 from utils import load_env_vars, sanitize_filename
+
+# Cache configuration
+CACHE_DIR = Path("episode_cache")
+CACHE_FILE = CACHE_DIR / "episodes_cache.parquet"
+CACHE_META = CACHE_DIR / "cache_metadata.json"
 
 
 def parse_opml(file_path):
@@ -19,13 +24,6 @@ def parse_opml(file_path):
     root = tree.getroot()
 
     feeds = []
-    # OPML uses namespaces, find them
-    namespaces = {
-        'opml': 'http://www.opml.org/spec2',
-        'default': 'http://www.opml.org/spec2'
-    }
-
-    # Try different paths for outline elements
     for outline in root.iter():
         if outline.tag.endswith('outline'):
             attrib = outline.attrib
@@ -38,8 +36,9 @@ def parse_opml(file_path):
     return feeds
 
 
-def fetch_episodes(feed_url, max_episodes=10):
-    """Fetch recent episodes from a podcast RSS feed."""
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def fetch_episodes_cached(feed_url, max_episodes=10):
+    """Fetch recent episodes from a podcast RSS feed (cached)."""
     try:
         feed = feedparser.parse(feed_url)
         episodes = []
@@ -68,52 +67,141 @@ def fetch_episodes(feed_url, max_episodes=10):
                 'title': entry.get('title', 'No title'),
                 'pub_date': pub_date,
                 'audio_url': audio_url,
-                'description': entry.get('description', '')[:500]  # Truncate long descriptions
+                'description': entry.get('description', '')[:500]
             })
 
         return episodes
     except Exception as e:
-        st.error(f"Error fetching from {feed_url}: {str(e)}")
         return []
 
 
+def load_cache():
+    """Load cached episodes from parquet file."""
+    if CACHE_FILE.exists():
+        try:
+            return pd.read_parquet(CACHE_FILE)
+        except Exception:
+            return pd.DataFrame()
+    return pd.DataFrame()
+
+
+def save_cache(df):
+    """Save episodes to parquet cache."""
+    CACHE_DIR.mkdir(exist_ok=True)
+    df.to_parquet(CACHE_FILE, index=False)
+
+
 def main():
-    st.set_page_config(page_title="Podcast Episode Selector", layout="wide")
+    st.set_page_config(
+        page_title="Podcast Episode Selector",
+        layout="wide",
+        page_icon="🎧"
+    )
 
-    st.title("Podcast Episode Selector")
-    st.write("Upload an OPML file to select podcast episodes for transcription.")
+    st.title("🎧 Podcast Episode Selector")
+    st.markdown("Select podcast episodes for transcription and summarization.")
 
-    # File uploader
-    uploaded_file = st.file_uploader("Choose an OPML file", type=['opml', 'xml'])
+    # Initialize session state
+    if 'episodes_df' not in st.session_state:
+        st.session_state.episodes_df = pd.DataFrame()
+    if 'feeds' not in st.session_state:
+        st.session_state.feeds = []
 
-    if uploaded_file is not None:
-        # Save uploaded file temporarily
-        temp_path = Path("temp_opml.opml")
-        with open(temp_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+    # Default OPML file path
+    default_opml = Path("antennapod-feeds-2026-01-12.opml")
 
-        # Parse OPML
-        with st.spinner("Parsing OPML file..."):
-            feeds = parse_opml(temp_path)
-            st.write(f"Found {len(feeds)} podcast feeds")
+    # Sidebar for file upload and settings
+    with st.sidebar:
+        st.header("⚙️ Settings")
 
-        # Clean up temp file
-        temp_path.unlink()
+        # File uploader with default file
+        st.subheader("OPML File")
+        use_default = st.checkbox(f"Use default: {default_opml.name}", value=True)
 
-        # Load config
+        if use_default and default_opml.exists():
+            st.success(f"✅ Using {default_opml.name}")
+            opml_source = default_opml
+        else:
+            uploaded_file = st.file_uploader("Upload OPML", type=['opml', 'xml'])
+            if uploaded_file:
+                temp_path = Path("temp_opml.opml")
+                with open(temp_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+                opml_source = temp_path
+            else:
+                opml_source = None
+
+        # Max episodes setting
         config = load_env_vars()
-        max_episodes = config['max_episodes']
+        max_episodes = st.number_input(
+            "Episodes per podcast",
+            min_value=1,
+            max_value=50,
+            value=config['max_episodes'],
+            help="Number of recent episodes to fetch"
+        )
 
-        # Fetch episodes
-        if st.button("Fetch Episodes", type="primary"):
+        st.divider()
+
+        # Cache info
+        if CACHE_FILE.exists():
+            cache_age = datetime.fromtimestamp(CACHE_FILE.stat().st_mtime)
+            st.info(f"📦 Cache from {cache_age.strftime('%H:%M')}\n{len(load_cache())} episodes")
+            if st.button("🗑️ Clear Cache"):
+                CACHE_FILE.unlink()
+                st.rerun()
+        else:
+            st.info("📦 No cache found")
+
+    # Main area
+    if opml_source and opml_source.exists():
+        # Parse OPML
+        if not st.session_state.feeds:
+            with st.spinner("Parsing OPML file..."):
+                st.session_state.feeds = parse_opml(opml_source)
+                st.success(f"✅ Found {len(st.session_state.feeds)} podcast feeds")
+
+        # Load cached episodes
+        cached_df = load_cache()
+        if not cached_df.empty:
+            st.info(f"📦 Loaded {len(cached_df)} episodes from cache")
+
+        # Fetch button
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            fetch_button = st.button("🔄 Fetch Episodes", type="primary", use_container_width=True)
+
+        if fetch_button or st.session_state.episodes_df.empty:
+            st.write("Fetching episodes...")
+
+            # Progress bar and status
             progress_bar = st.progress(0)
-            all_episodes = []
+            status_text = st.empty()
 
-            for i, feed in enumerate(feeds):
-                st.write(f"Fetching from: {feed['title']}")
-                episodes = fetch_episodes(feed['url'], max_episodes)
+            all_episodes = []
+            seen_urls = set()  # Track unique episodes
+
+            # Add cached episodes first
+            if not cached_df.empty:
+                for _, row in cached_df.iterrows():
+                    url = row.get('audio_url', '')
+                    if url and url not in seen_urls:
+                        all_episodes.append(row.to_dict())
+                        seen_urls.add(url)
+
+            # Fetch new episodes
+            new_count = 0
+            for i, feed in enumerate(st.session_state.feeds):
+                # Update status (compact)
+                status_text.markdown(f"**{i+1}/{len(st.session_state.feeds)}:** {feed['title'][:50]}...")
+
+                episodes = fetch_episodes_cached(feed['url'], max_episodes)
 
                 for ep in episodes:
+                    # Skip if we already have this episode
+                    if ep['audio_url'] and ep['audio_url'] in seen_urls:
+                        continue
+
                     all_episodes.append({
                         'podcast_name': feed['title'],
                         'episode_title': ep['title'],
@@ -121,82 +209,147 @@ def main():
                         'audio_url': ep['audio_url'],
                         'description': ep['description']
                     })
+                    seen_urls.add(ep['audio_url'])
+                    new_count += 1
 
-                progress_bar.progress((i + 1) / len(feeds))
+                progress_bar.progress((i + 1) / len(st.session_state.feeds))
 
-            st.write(f"Found {len(all_episodes)} total episodes")
+            status_text.empty()
 
             # Create DataFrame
             if all_episodes:
                 df = pd.DataFrame(all_episodes)
+                st.session_state.episodes_df = df
 
-                # Sort options
-                sort_by = st.radio("Sort by:", ['publish_date', 'podcast_name'])
-                if sort_by == 'publish_date':
-                    df = df.sort_values('publish_date', ascending=False)
-                else:
-                    df = df.sort_values('podcast_name')
+                # Save to cache
+                save_cache(df)
 
-                # Display with checkboxes
-                st.write("### Select Episodes to Process")
-                st.write("Check the box next to each episode you want to transcribe.")
-
-                # Add a select all checkbox
-                select_all = st.checkbox("Select All Episodes")
-
-                if select_all:
-                    df['selected'] = True
-                else:
-                    df['selected'] = False
-
-                # Display editable dataframe
-                edited_df = st.data_editor(
-                    df,
-                    column_config={
-                        'selected': st.column_config.CheckboxColumn(
-                            "Select",
-                            help="Check to include this episode"
-                        ),
-                        'podcast_name': st.column_config.TextColumn("Podcast", width="medium"),
-                        'episode_title': st.column_config.TextColumn("Episode", width="large"),
-                        'publish_date': st.column_config.TextColumn("Date", width="small"),
-                        'description': st.column_config.TextColumn("Description", width="large"),
-                        'audio_url': st.column_config.TextColumn("Audio URL", width="large")
-                    },
-                    hide_index=True,
-                    use_container_width=True
-                )
-
-                # Export selected episodes
-                selected_count = edited_df['selected'].sum()
-
-                col1, col2 = st.columns([1, 1])
-                with col1:
-                    st.write(f"Selected: {selected_count} episodes")
-
-                with col2:
-                    if st.button("Export Selected to CSV", type="primary"):
-                        selected_episodes = edited_df[edited_df['selected'] == True]
-
-                        if not selected_episodes.empty:
-                            # Remove the selected column for export
-                            export_df = selected_episodes[['podcast_name', 'episode_title',
-                                                          'publish_date', 'audio_url', 'description']]
-
-                            csv_path = Path("selected_episodes.csv")
-                            export_df.to_csv(csv_path, index=False, encoding='utf-8')
-
-                            st.success(f"Exported {len(selected_episodes)} episodes to selected_episodes.csv")
-                            st.download_button(
-                                label="Download CSV",
-                                data=export_df.to_csv(index=False).encode('utf-8'),
-                                file_name='selected_episodes.csv',
-                                mime='text/csv'
-                            )
-                        else:
-                            st.warning("No episodes selected. Please select at least one episode.")
+                st.success(f"✅ Found {len(df)} total episodes ({new_count} new)")
             else:
-                st.error("No episodes found. Please check your OPML file and feed URLs.")
+                st.error("❌ No episodes found")
+                st.stop()
+
+        # Display episodes if we have them
+        if not st.session_state.episodes_df.empty:
+            df = st.session_state.episodes_df
+
+            # Filters
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
+                search = st.text_input("🔍 Search episodes", placeholder="Type to filter...")
+            with col2:
+                sort_by = st.selectbox("Sort by", ['publish_date', 'podcast_name'])
+            with col3:
+                order = st.selectbox("Order", ['Newest first', 'Oldest first'] if sort_by == 'publish_date' else ['A-Z', 'Z-A'])
+
+            # Apply filters
+            if search:
+                df = df[df['episode_title'].str.contains(search, case=False, na=False) |
+                       df['podcast_name'].str.contains(search, case=False, na=False)]
+
+            # Sort
+            if sort_by == 'publish_date':
+                df = df.sort_values('publish_date', ascending=(order == 'Oldest first'))
+            else:
+                df = df.sort_values('podcast_name', ascending=(order == 'A-Z'))
+
+            st.caption(f"Showing {len(df)} episodes")
+
+            # Initialize selection column if not exists
+            if 'selected' not in df.columns:
+                df = df.copy()
+                df['selected'] = False
+                st.session_state.episodes_df = df
+
+            # Selection controls
+            col1, col2, col3 = st.columns([1, 1, 2])
+            with col1:
+                if st.button("✅ Select All"):
+                    df['selected'] = True
+                    st.session_state.episodes_df = df
+                    st.rerun()
+            with col2:
+                if st.button("❌ Clear All"):
+                    df['selected'] = False
+                    st.session_state.episodes_df = df
+                    st.rerun()
+            with col3:
+                selected_count = int(df['selected'].sum())
+                st.metric("Selected", f"{selected_count} episodes")
+
+            # Display table
+            edited_df = st.data_editor(
+                df,
+                column_config={
+                    'selected': st.column_config.CheckboxColumn(
+                        "Select",
+                        width="small"
+                    ),
+                    'podcast_name': st.column_config.TextColumn(
+                        "Podcast",
+                        width="medium"
+                    ),
+                    'episode_title': st.column_config.TextColumn(
+                        "Episode",
+                        width="large"
+                    ),
+                    'publish_date': st.column_config.DateColumn(
+                        "Date",
+                        width="small",
+                        format="YYYY-MM-DD"
+                    ),
+                    'description': st.column_config.TextColumn(
+                        "Description",
+                        width="medium",
+                        disabled=True
+                    ),
+                    'audio_url': st.column_config.TextColumn(
+                        "Audio URL",
+                        width="small",
+                        disabled=True
+                    )
+                },
+                hide_index=True,
+                use_container_width=True,
+                height=400
+            )
+
+            # Update session state
+            st.session_state.episodes_df = edited_df
+
+            # Export section
+            st.divider()
+            col1, col2, col3 = st.columns([1, 1, 2])
+
+            with col1:
+                if st.button("💾 Export to CSV", type="primary", use_container_width=True):
+                    selected_episodes = edited_df[edited_df['selected'] == True]
+
+                    if not selected_episodes.empty:
+                        export_df = selected_episodes[['podcast_name', 'episode_title',
+                                                      'publish_date', 'audio_url', 'description']]
+
+                        csv_path = Path("selected_episodes.csv")
+                        export_df.to_csv(csv_path, index=False, encoding='utf-8')
+
+                        st.success(f"✅ Exported {len(selected_episodes)} episodes")
+                        st.download_button(
+                            label="📥 Download CSV",
+                            data=export_df.to_csv(index=False).encode('utf-8'),
+                            file_name='selected_episodes.csv',
+                            mime='text/csv',
+                            use_container_width=True
+                        )
+                    else:
+                        st.warning("⚠️ No episodes selected")
+
+            with col2:
+                selected_count = int(edited_df['selected'].sum())
+                if selected_count > 0:
+                    st.info(f"📊 Ready to process {selected_count} episodes")
+
+    else:
+        st.warning("⚠️ Please upload an OPML file to get started")
 
 
 if __name__ == "__main__":

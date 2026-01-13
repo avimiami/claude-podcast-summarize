@@ -4,6 +4,9 @@ feedparser>=6.0.10
 pandas>=2.0.0
 requests>=2.31.0
 
+# Data Storage (for caching)
+pyarrow>=14.0.0
+
 # XML Parsing
 lxml>=5.0.0
 

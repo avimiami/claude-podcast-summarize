@@ -16,6 +16,9 @@ summaries/
 selected_episodes.csv
 errors.log
 *.log
+episode_cache/
+temp_audio/
+temp_opml.opml
 
 # IDEs
 .vscode/
