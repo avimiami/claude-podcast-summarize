@@ -1,6 +1,6 @@
 """
 Script 2: Download & Transcribe
-Reads CSV from Script 1, downloads/transcribes audio files using Deep Infra API.
+Reads CSV from Script 1, downloads audio files, and transcribes using Deep Infra Whisper API.
 Run with: python 2_transcribe.py
 """
 
@@ -9,42 +9,65 @@ import requests
 from pathlib import Path
 from tqdm import tqdm
 from tenacity import retry, stop_after_attempt, wait_exponential
+from openai import OpenAI
 from utils import (
     load_env_vars, sanitize_filename, create_transcript_path,
     log_error, write_text_file
 )
 from datetime import datetime
 import json
+import os
+
+
+def download_audio_file(audio_url, download_path):
+    """
+    Download audio file from URL to local path.
+    Returns the path to downloaded file.
+    """
+    try:
+        response = requests.get(audio_url, stream=True, timeout=60)
+        response.raise_for_status()
+
+        # Ensure parent directory exists
+        download_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(download_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+
+        return download_path
+
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Failed to download audio: {str(e)}")
 
 
 @retry(
     stop=stop_after_attempt(3),
     wait=wait_exponential(multiplier=1, min=4, max=60)
 )
-def transcribe_audio_deepinfra(audio_url, api_key, endpoint, model="whisper-large-v3"):
+def transcribe_audio_deepinfra(audio_file_path, api_key, model="openai/whisper-large-v3"):
     """
-    Transcribe audio using Deep Infra API.
-    Can pass audio URL directly without downloading.
+    Transcribe audio file using Deep Infra Whisper API via OpenAI SDK.
+    Requires the audio file to be downloaded first.
     """
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-
-    data = {
-        "model": model,
-        "audio": audio_url
-    }
+    # Initialize OpenAI client with Deep Infra base URL
+    client = OpenAI(
+        api_key=api_key,
+        base_url="https://api.deepinfra.com/v1/openai"
+    )
 
     try:
-        response = requests.post(endpoint, headers=headers, json=data, timeout=300)
-        response.raise_for_status()
-        result = response.json()
+        # Open the audio file and transcribe
+        with open(audio_file_path, 'rb') as audio_file:
+            transcript = client.audio.transcriptions.create(
+                model=model,
+                file=audio_file
+            )
 
-        # Deep Infra Whisper returns text in 'text' field
-        return result.get('text', '')
+        return transcript.text
 
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         raise Exception(f"Transcription API error: {str(e)}")
 
 
@@ -73,6 +96,10 @@ def main():
         print("Please run Script 1 (1_episode_selector.py) first to generate the CSV file")
         return
 
+    # Create temporary download directory
+    temp_dir = Path("temp_audio")
+    temp_dir.mkdir(exist_ok=True)
+
     # Load episodes from CSV
     df = pd.read_csv(csv_path)
     print(f"\nFound {len(df)} episodes in CSV")
@@ -95,22 +122,28 @@ def main():
             error_count += 1
             continue
 
-        try:
-            # Create transcript path
-            transcript_path = create_transcript_path(podcast_name, episode_title)
+        # Create paths
+        transcript_path = create_transcript_path(podcast_name, episode_title)
+        audio_filename = sanitize_filename(f"{podcast_name}_{episode_title}.mp3")
+        audio_download_path = temp_dir / audio_filename
 
-            # Skip if already transcribed
-            if transcript_path.exists():
-                print(f"  Already exists, skipping")
-                success_count += 1
-                continue
+        # Skip if already transcribed
+        if transcript_path.exists():
+            print(f"  Already exists, skipping")
+            success_count += 1
+            continue
+
+        try:
+            # Download audio file
+            print(f"  Downloading audio...")
+            download_audio_file(audio_url, audio_download_path)
+            print(f"  Downloaded to: {audio_download_path}")
 
             # Transcribe using Deep Infra API
-            print(f"  Transcribing via Deep Infra API...")
+            print(f"  Transcribing via Deep Infra Whisper API...")
             transcription = transcribe_audio_deepinfra(
-                audio_url,
+                audio_download_path,
                 config['deep_infra_key'],
-                config['deep_infra_url'],
                 config['transcription_model']
             )
 
@@ -133,7 +166,7 @@ def main():
             }
             create_metadata_file(transcript_path, metadata)
 
-            print(f"  Saved to: {transcript_path}")
+            print(f"  Saved transcript to: {transcript_path}")
             success_count += 1
 
         except Exception as e:
@@ -141,6 +174,22 @@ def main():
             log_error("2_transcribe", f"Failed to transcribe {episode_title}: {str(e)}")
             error_count += 1
             continue
+
+        finally:
+            # Clean up downloaded audio file
+            if audio_download_path.exists():
+                try:
+                    audio_download_path.unlink()
+                    print(f"  Cleaned up audio file")
+                except Exception as e:
+                    print(f"  Warning: Could not delete audio file: {str(e)}")
+
+    # Clean up temp directory if empty
+    try:
+        if temp_dir.exists() and not list(temp_dir.iterdir()):
+            temp_dir.rmdir()
+    except:
+        pass
 
     # Summary
     print("\n" + "=" * 50)
