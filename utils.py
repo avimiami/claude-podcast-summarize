@@ -14,8 +14,10 @@ def load_env_vars():
     load_dotenv()
     return {
         'deep_infra_key': os.getenv('DEEP_INFRA_API_KEY'),
-        'llm_key': os.getenv('LLM_API_KEY'),
-        'llm_provider': os.getenv('LLM_PROVIDER', 'openai'),
+        'openrouter_key': os.getenv('OPENROUTER_API_KEY'),
+        'llm_provider': os.getenv('LLM_PROVIDER', 'openai').lower(),
+        'deep_infra_url': os.getenv('DEEP_INFRA_URL', 'https://api.deepinfra.com/v1/audio/transcriptions'),
+        'openrouter_url': os.getenv('OPEN_ROUTER_URL', 'https://openrouter.ai/api/v1/chat/completions'),
         'max_episodes': int(os.getenv('MAX_EPISODES_PER_PODCAST', 10)),
         'transcription_model': os.getenv('TRANSCRIPTION_MODEL', 'whisper-large-v3'),
         'summary_model': os.getenv('SUMMARY_MODEL', 'gpt-4o'),

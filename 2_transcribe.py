@@ -21,13 +21,11 @@ import json
     stop=stop_after_attempt(3),
     wait=wait_exponential(multiplier=1, min=4, max=60)
 )
-def transcribe_audio_deepinfra(audio_url, api_key, model="whisper-large-v3"):
+def transcribe_audio_deepinfra(audio_url, api_key, endpoint, model="whisper-large-v3"):
     """
     Transcribe audio using Deep Infra API.
     Can pass audio URL directly without downloading.
     """
-    endpoint = "https://api.deepinfra.com/v1/audio/transcriptions"
-
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
@@ -112,6 +110,7 @@ def main():
             transcription = transcribe_audio_deepinfra(
                 audio_url,
                 config['deep_infra_key'],
+                config['deep_infra_url'],
                 config['transcription_model']
             )
 

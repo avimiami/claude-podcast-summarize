@@ -126,6 +126,36 @@ def summarize_with_deepinfra(transcript, prompt, api_key, model="mixtral-8x7b"):
     return response.choices[0].message.content
 
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=60)
+)
+def summarize_with_openrouter(transcript, prompt, api_key, base_url, model):
+    """Generate summary using OpenRouter API (OpenAI-compatible)."""
+    client = OpenAI(
+        base_url=base_url,
+        api_key=api_key
+    )
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that summarizes podcast transcripts."
+            },
+            {
+                "role": "user",
+                "content": f"{prompt}\n\nTranscript:\n{transcript}"
+            }
+        ],
+        max_tokens=4000,
+        temperature=0.3
+    )
+
+    return response.choices[0].message.content
+
+
 def main():
     parser = argparse.ArgumentParser(description="Summarize podcast transcripts")
     parser.add_argument(
@@ -148,9 +178,21 @@ def main():
     # Load configuration
     config = load_env_vars()
 
-    if not config['llm_key']:
-        print("Error: LLM_API_KEY not found in .env file")
-        print("Please copy .env.template to .env and add your API key")
+    # Check for appropriate API key based on provider
+    provider = config['llm_provider']
+    if provider == "openrouter":
+        if not config['openrouter_key']:
+            print("Error: OPENROUTER_API_KEY not found in .env file")
+            print("Please copy .env.template to .env and add your API key")
+            return
+    elif provider in ["openai", "anthropic", "deepinfra"]:
+        if not config.get('llm_key'):
+            print(f"Error: LLM_API_KEY not found in .env file for provider '{provider}'")
+            print("Please copy .env.template to .env and add your API key")
+            return
+    else:
+        print(f"Error: Unknown provider '{provider}'")
+        print("Supported providers: openai, anthropic, deepinfra, openrouter")
         return
 
     # Load prompt templates
@@ -173,7 +215,6 @@ def main():
 
     # Get model to use
     model = args.model or config['summary_model']
-    provider = config['llm_provider']
 
     print(f"Using provider: {provider}")
     print(f"Using model: {model}")
@@ -225,6 +266,9 @@ def main():
                 summary = summarize_with_anthropic(transcript, prompt, config['llm_key'], model)
             elif provider == "deepinfra":
                 summary = summarize_with_deepinfra(transcript, prompt, config['llm_key'], model)
+            elif provider == "openrouter":
+                summary = summarize_with_openrouter(transcript, prompt, config['openrouter_key'],
+                                                     config['openrouter_url'], model)
             else:
                 print(f"  Error: Unknown provider '{provider}'")
                 log_error("3_summarize", f"Unknown provider: {provider}")
