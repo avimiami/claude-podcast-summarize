@@ -1,0 +1,7 @@
+{
+  "podcast_name": "ChinaTalk",
+  "episode_title": "Are We Cooked? Q1 2026",
+  "audio_url": "https://pscrb.fm/rss/p/traffic.megaphone.fm/CHTAL5545386685.mp3",
+  "transcription_date": "2026-01-12T22:19:36.459794",
+  "model_used": "openai/whisper-large-v3-turbo"
+}

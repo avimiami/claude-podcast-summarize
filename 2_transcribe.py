@@ -175,22 +175,6 @@ def main():
             error_count += 1
             continue
 
-        finally:
-            # Clean up downloaded audio file
-            if audio_download_path.exists():
-                try:
-                    audio_download_path.unlink()
-                    print(f"  Cleaned up audio file")
-                except Exception as e:
-                    print(f"  Warning: Could not delete audio file: {str(e)}")
-
-    # Clean up temp directory if empty
-    try:
-        if temp_dir.exists() and not list(temp_dir.iterdir()):
-            temp_dir.rmdir()
-    except:
-        pass
-
     # Summary
     print("\n" + "=" * 50)
     print("Transcription Summary:")
@@ -198,6 +182,7 @@ def main():
     print(f"  Errors: {error_count}")
     print(f"  Total: {len(df)}")
     print(f"\nTranscripts saved to: {Path('transcripts').absolute()}")
+    print(f"Audio files saved to: {temp_dir.absolute()}")
 
 
 if __name__ == "__main__":

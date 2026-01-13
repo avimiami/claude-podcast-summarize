@@ -133,7 +133,7 @@ def summarize_with_deepinfra(transcript, prompt, api_key, model="mixtral-8x7b"):
 def summarize_with_openrouter(transcript, prompt, api_key, base_url, model):
     """Generate summary using OpenRouter API (OpenAI-compatible)."""
     client = OpenAI(
-        base_url=base_url,
+        base_url="https://openrouter.ai/api/v1",
         api_key=api_key
     )
 
