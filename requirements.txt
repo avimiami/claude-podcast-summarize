@@ -10,6 +10,9 @@ lxml>=5.0.0
 # Environment Variables
 python-dotenv>=1.0.0
 
+# YAML Parsing
+PyYAML>=6.0.0
+
 # Progress Bars
 tqdm>=4.66.0
 

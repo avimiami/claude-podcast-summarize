@@ -1,0 +1,101 @@
+# Prompt Templates for Podcast Summarization
+# Customize the prompts for each category as needed
+
+global_macro:
+  prompt: |
+    Analyze this podcast transcript for global macro insights. Extract and summarize:
+
+    1. Key themes and macroeconomic topics discussed
+    2. Specific predictions or forecasts made by the speakers
+    3. Important data points, statistics, or economic indicators mentioned
+    4. Overall sentiment (bullish/bearish/neutral) on markets/economy
+    5. Actionable insights for investors or analysts
+
+    Provide a structured summary with clear sections.
+
+  extract_fields:
+    - key_themes
+    - predictions
+    - data_points
+    - sentiment
+    - actionable_insights
+
+
+AI:
+  prompt: |
+    Summarize AI developments discussed in this podcast transcript. Extract:
+
+    1. Key AI technologies and models mentioned
+    2. Companies and organizations discussed
+    3. Recent breakthroughs or announcements
+    4. Concerns or risks raised (safety, regulation, etc.)
+    5. Investment opportunities or business implications
+
+    Provide a structured summary with clear sections.
+
+  extract_fields:
+    - technologies
+    - companies
+    - breakthroughs
+    - concerns
+    - business_implications
+
+
+crypto:
+  prompt: |
+    Extract crypto market analysis from this podcast transcript. Include:
+
+    1. Assets discussed (BTC, ETH, altcoins, etc.)
+    2. Price predictions or targets mentioned
+    3. Regulatory news or developments
+    4. Market trends and patterns identified
+    5. Technology developments (protocols, upgrades, etc.)
+
+    Provide a structured summary with clear sections.
+
+  extract_fields:
+    - assets_discussed
+    - price_predictions
+    - regulatory_news
+    - trends
+    - technology_developments
+
+
+tech:
+  prompt: |
+    Summarize technology industry insights from this podcast transcript. Include:
+
+    1. Major technology trends discussed
+    2. Companies and products mentioned
+    3. Industry shifts or disruptions
+    4. Investment themes and opportunities
+    5. Expert opinions and analysis
+
+    Provide a structured summary with clear sections.
+
+  extract_fields:
+    - trends
+    - companies
+    - disruptions
+    - investment_themes
+    - expert_analysis
+
+
+general:
+  prompt: |
+    Provide a comprehensive summary of this podcast transcript. Include:
+
+    1. Main topics and themes discussed
+    2. Key insights and takeaways
+    3. Notable guests or perspectives
+    4. Important facts or data mentioned
+    5. Memorable quotes or moments
+
+    Provide a well-structured summary that captures the essence of the conversation.
+
+  extract_fields:
+    - main_topics
+    - key_insights
+    - guests
+    - important_facts
+    - memorable_quotes

@@ -5,7 +5,7 @@ Run with: python 3_summarize.py --category global_macro
 """
 
 import argparse
-import json
+import yaml
 from pathlib import Path
 from tqdm import tqdm
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -19,13 +19,13 @@ from datetime import datetime
 
 
 def load_prompt_templates():
-    """Load prompt templates from JSON file."""
-    template_path = Path("prompt_templates.json")
+    """Load prompt templates from YAML file."""
+    template_path = Path("prompt_templates.yaml")
     if not template_path.exists():
-        raise FileNotFoundError(f"prompt_templates.json not found at {template_path}")
+        raise FileNotFoundError(f"prompt_templates.yaml not found at {template_path}")
 
     with open(template_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+        return yaml.safe_load(f)
 
 
 def get_transcripts():
