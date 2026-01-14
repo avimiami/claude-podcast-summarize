@@ -106,6 +106,8 @@ def main():
         st.session_state.episodes_df = pd.DataFrame()
     if 'feeds' not in st.session_state:
         st.session_state.feeds = []
+    if 'episodes_fetched' not in st.session_state:
+        st.session_state.episodes_fetched = False
 
     # Default OPML file path
     default_opml = Path("antennapod-feeds-2026-01-12.opml")
@@ -116,13 +118,13 @@ def main():
 
         # File uploader with default file
         st.subheader("OPML File")
-        use_default = st.checkbox(f"Use default: {default_opml.name}", value=True)
+        use_default = st.checkbox(f"Use default: {default_opml.name}", value=True, key="use_default")
 
         if use_default and default_opml.exists():
             st.success(f"✅ Using {default_opml.name}")
             opml_source = default_opml
         else:
-            uploaded_file = st.file_uploader("Upload OPML", type=['opml', 'xml'])
+            uploaded_file = st.file_uploader("Upload OPML", type=['opml', 'xml'], key="opml_uploader")
             if uploaded_file:
                 temp_path = Path("temp_opml.opml")
                 with open(temp_path, "wb") as f:
@@ -138,7 +140,8 @@ def main():
             min_value=1,
             max_value=50,
             value=config['max_episodes'],
-            help="Number of recent episodes to fetch"
+            help="Number of recent episodes to fetch",
+            key="max_episodes"
         )
 
         st.divider()
@@ -147,8 +150,9 @@ def main():
         if CACHE_FILE.exists():
             cache_age = datetime.fromtimestamp(CACHE_FILE.stat().st_mtime)
             st.info(f"📦 Cache from {cache_age.strftime('%H:%M')}\n{len(load_cache())} episodes")
-            if st.button("🗑️ Clear Cache"):
+            if st.button("🗑️ Clear Cache", key="clear_cache"):
                 CACHE_FILE.unlink()
+                st.session_state.episodes_fetched = False
                 st.rerun()
         else:
             st.info("📦 No cache found")
@@ -169,9 +173,15 @@ def main():
         # Fetch button
         col1, col2 = st.columns([1, 3])
         with col1:
-            fetch_button = st.button("🔄 Fetch Episodes", type="primary", use_container_width=True)
+            fetch_button = st.button("🔄 Fetch Episodes", type="primary", use_container_width=True, key="fetch_button")
 
-        if fetch_button or st.session_state.episodes_df.empty:
+        if fetch_button:
+            st.session_state.episodes_fetched = True
+
+        # Only fetch if button clicked OR if we have cached data but haven't fetched yet
+        should_fetch = fetch_button or (not st.session_state.episodes_fetched and not cached_df.empty)
+
+        if should_fetch:
             st.write("Fetching episodes...")
 
             # Progress bar and status
@@ -236,11 +246,11 @@ def main():
             # Filters
             col1, col2, col3 = st.columns([2, 1, 1])
             with col1:
-                search = st.text_input("🔍 Search episodes", placeholder="Type to filter...")
+                search = st.text_input("🔍 Search episodes", placeholder="Type to filter...", key="search_input")
             with col2:
-                sort_by = st.selectbox("Sort by", ['publish_date', 'podcast_name'])
+                sort_by = st.selectbox("Sort by", ['publish_date', 'podcast_name'], key="sort_by")
             with col3:
-                order = st.selectbox("Order", ['Newest first', 'Oldest first'] if sort_by == 'publish_date' else ['A-Z', 'Z-A'])
+                order = st.selectbox("Order", ['Newest first', 'Oldest first'] if sort_by == 'publish_date' else ['A-Z', 'Z-A'], key="order")
 
             # Apply filters
             if search:
@@ -255,31 +265,29 @@ def main():
 
             st.caption(f"Showing {len(df)} episodes")
 
-            # Initialize selection column if not exists
-            if 'selected' not in df.columns:
-                df = df.copy()
-                df['selected'] = False
-                st.session_state.episodes_df = df
+            # Initialize selections in session state if not exists
+            if 'selections' not in st.session_state:
+                st.session_state.selections = {}
 
-            # Selection controls
-            col1, col2, col3 = st.columns([1, 1, 2])
-            with col1:
-                if st.button("✅ Select All"):
-                    df['selected'] = True
-                    st.session_state.episodes_df = df
-                    st.rerun()
-            with col2:
-                if st.button("❌ Clear All"):
-                    df['selected'] = False
-                    st.session_state.episodes_df = df
-                    st.rerun()
-            with col3:
-                selected_count = int(df['selected'].sum())
-                st.metric("Selected", f"{selected_count} episodes")
+            # Add a selection column if not exists in original dataframe
+            if 'selected' not in st.session_state.episodes_df.columns:
+                st.session_state.episodes_df = st.session_state.episodes_df.copy()
+                st.session_state.episodes_df.insert(0, 'selected', False)
 
-            # Display table
+            # Apply selections from session state to display dataframe
+            df_display = df.copy()
+            if 'selected' not in df_display.columns:
+                df_display.insert(0, 'selected', False)
+
+            # Restore previous selections
+            for idx, row in df_display.iterrows():
+                audio_url = row.get('audio_url', '')
+                if audio_url in st.session_state.selections:
+                    df_display.at[idx, 'selected'] = st.session_state.selections[audio_url]
+
+            # Display table with checkbox selection
             edited_df = st.data_editor(
-                df,
+                df_display,
                 column_config={
                     'selected': st.column_config.CheckboxColumn(
                         "Select",
@@ -293,38 +301,57 @@ def main():
                         "Episode",
                         width="large"
                     ),
-                    'publish_date': st.column_config.DateColumn(
+                    'publish_date': st.column_config.TextColumn(
                         "Date",
-                        width="small",
-                        format="YYYY-MM-DD"
+                        width="small"
                     ),
                     'description': st.column_config.TextColumn(
                         "Description",
-                        width="medium",
+                        width="large",
                         disabled=True
                     ),
                     'audio_url': st.column_config.TextColumn(
                         "Audio URL",
-                        width="small",
+                        width="medium",
                         disabled=True
                     )
                 },
                 hide_index=True,
                 use_container_width=True,
-                height=400
+                height=400,
+                key="episode_editor"
             )
 
-            # Update session state
-            st.session_state.episodes_df = edited_df
+            # Save selections to session state
+            for idx, row in edited_df.iterrows():
+                audio_url = row.get('audio_url', '')
+                st.session_state.selections[audio_url] = row.get('selected', False)
+
+            # Get selected rows
+            selected_episodes = edited_df[edited_df['selected'] == True]
+
+            # Show selected episodes section
+            st.divider()
+
+            if not selected_episodes.empty:
+                st.subheader(f"✅ Selected Episodes: {len(selected_episodes)}")
+
+                # Show selected episodes in a separate table
+                st.dataframe(
+                    selected_episodes[['podcast_name', 'episode_title', 'publish_date']],
+                    use_container_width=True,
+                    hide_index=True
+                )
+            else:
+                st.subheader("✅ Selected Episodes: 0")
+                st.info("👆 Check the boxes in the table above to select episodes")
 
             # Export section
             st.divider()
             col1, col2, col3 = st.columns([1, 1, 2])
 
             with col1:
-                if st.button("💾 Export to CSV", type="primary", use_container_width=True):
-                    selected_episodes = edited_df[edited_df['selected'] == True]
-
+                if st.button("💾 Export to CSV", type="primary", use_container_width=True, key="export_button"):
                     if not selected_episodes.empty:
                         export_df = selected_episodes[['podcast_name', 'episode_title',
                                                       'publish_date', 'audio_url', 'description']]
@@ -344,9 +371,8 @@ def main():
                         st.warning("⚠️ No episodes selected")
 
             with col2:
-                selected_count = int(edited_df['selected'].sum())
-                if selected_count > 0:
-                    st.info(f"📊 Ready to process {selected_count} episodes")
+                if not selected_episodes.empty:
+                    st.info(f"📊 Ready to process {len(selected_episodes)} episodes")
 
     else:
         st.warning("⚠️ Please upload an OPML file to get started")

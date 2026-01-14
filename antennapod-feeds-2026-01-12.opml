@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
+<opml version="2.0">
+  <head>
+    <title>AntennaPod Subscriptions</title>
+    <dateCreated>12 Jan 26 21:06:11 -0500</dateCreated>
+  </head>
+  <body>
+    <outline text="0xResearch" title="0xResearch" type="rss" xmlUrl="https://feeds.megaphone.fm/0xresearch" />
+    <!-- <outline text="18Forty Podcast" title="18Forty Podcast" type="rss" xmlUrl="https://www.spreaker.com/show/4344730/episodes/feed" htmlUrl="https://18forty.org" /> -->
+    <outline text="a16z crypto podcast" title="a16z crypto podcast" type="rss" xmlUrl="https://feeds.simplecast.com/XPOpH7r4" htmlUrl="https://web3-with-a16z.simplecast.com" />
+    <!-- <outline text="Above &amp; Beyond: Group Therapy" title="Above &amp; Beyond: Group Therapy" type="rss" xmlUrl="http://static.aboveandbeyond.nu/grouptherapy/podcast.xml" htmlUrl="http://static.aboveandbeyond.nu/grouptherapy/podcast.xml" /> -->
+    <outline text="Acquired" title="Acquired" type="rss" xmlUrl="https://feeds.transistor.fm/acquired" htmlUrl="https://acquired.fm" />
+    <outline text="AI + a16z" title="AI + a16z" type="rss" xmlUrl="https://feeds.simplecast.com/Hb_IuXOo" htmlUrl="https://ai-a16z.simplecast.com" />
+    <outline text="AI Deep Dive" title="AI Deep Dive" type="rss" xmlUrl="https://anchor.fm/s/fb02a868/podcast/rss/" htmlUrl="https://dailydeepdives.com/" />
+    <outline text="All-In with Chamath, Jason, Sacks &amp; Friedberg" title="All-In with Chamath, Jason, Sacks &amp; Friedberg" type="rss" xmlUrl="https://allinchamathjason.libsyn.com/rss" htmlUrl="http://allinchamathjason.libsyn.com/website" />
+    <outline text="Alpha Exchange" title="Alpha Exchange" type="rss" xmlUrl="https://feeds.simplecast.com/8g9ryFGf" htmlUrl="http://macroriskadvisors.com" />
+    <outline text="Animal Spirits Podcast" title="Animal Spirits Podcast" type="rss" xmlUrl="https://feeds.megaphone.fm/TCP6464651487" htmlUrl="https://awealthofcommonsense.com/podcast/" />
+    <outline text="At Any Rate" title="At Any Rate" type="rss" xmlUrl="https://atanyrate.podbean.com/feed.xml" htmlUrl="https://jpmorgan.com/global/research" />
+    <outline text="Bankless" title="Bankless" type="rss" xmlUrl="https://feeds.flightcast.com/p83fuj0y0u58o82l41xei7zo.xml" htmlUrl="http://podcast.banklesshq.com/" />
+    <outline text="Barron's Streetwise" title="Barron's Streetwise" type="rss" xmlUrl="https://video-api.barrons.com/podcast/rss/barrons/streetwise?partner=itunes" htmlUrl="https://www.barrons.com/podcasts/streetwise" />
+    <outline text="BG2Pod with Brad Gerstner and Bill Gurley" title="BG2Pod with Brad Gerstner and Bill Gurley" type="rss" xmlUrl="https://anchor.fm/s/f06c2370/podcast/rss" htmlUrl="https://www.bg2pod.com" />
+    <outline text="Big Technology Podcast" title="Big Technology Podcast" type="rss" xmlUrl="https://feeds.megaphone.fm/LI3617121267" htmlUrl="https://www.bigtechnology.com/" />
+    <outline text="Bloor Street Capital | Jimmy Connor Growing and Protecting My Wealth" title="Bloor Street Capital | Jimmy Connor Growing and Protecting My Wealth" type="rss" xmlUrl="https://anchor.fm/s/da07cee0/podcast/rss" htmlUrl="https://bloorstreetcapital.com/" />
+    <outline text="Brain Science with Ginger Campbell, MD: Neuroscience for Everyone" title="Brain Science with Ginger Campbell, MD: Neuroscience for Everyone" type="rss" xmlUrl="https://brainsciencepodcast.libsyn.com/rss" htmlUrl="http://brainsciencepodcast.com" />
+    <outline text="Broken Silicon" title="Broken Silicon" type="rss" xmlUrl="https://feeds.simplecast.com/a0erDdmX" htmlUrl="https://bleav.com/shows/broken-silicon/" />
+    <outline text="Call Me Back - with Dan Senor" title="Call Me Back - with Dan Senor" type="rss" xmlUrl="https://feeds.simplecast.com/5gzMlOG1" htmlUrl="https://callmeback.simplecast.com" />
+    <outline text="Capital Allocators – Inside the Institutional Investment Industry" title="Capital Allocators – Inside the Institutional Investment Industry" type="rss" xmlUrl="https://tedseides.libsyn.com/rss" htmlUrl="https://capitalallocators.com" />
+    <outline text="ChinaTalk" title="ChinaTalk" type="rss" xmlUrl="https://feeds.megaphone.fm/CHTAL4990341033" htmlUrl="https://chinatalk.substack.com/" />
+    <outline text="Compound Insights" title="Compound Insights" type="rss" xmlUrl="https://cfasocietynewyork.libsyn.com/rss" htmlUrl="http://cfasocietynewyork.cfainstitute.libsynpro.com/website" />
+    <outline text="Conversations with Tyler" title="Conversations with Tyler" type="rss" xmlUrl="https://cowenconvos.libsyn.com/rss" htmlUrl="https://www.conversationswithtyler.com" />
+    <outline text="Deep State Radio" title="Deep State Radio" type="rss" xmlUrl="https://feeds.acast.com/public/shows/65e5b90e5c6699001750c5ae" htmlUrl="https://www.podomatic.com/podcasts/grumdeepstate" />
+    <outline text="Dr Dark After Dark" title="Dr Dark After Dark" type="rss" xmlUrl="https://anchor.fm/s/1a22e524/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/chris-dark" />
+    <outline text="Dwarkesh Podcast" title="Dwarkesh Podcast" type="rss" xmlUrl="https://api.substack.com/feed/podcast/69345.rss" htmlUrl="https://www.dwarkesh.com/podcast" />
+    <outline text="Empire" title="Empire" type="rss" xmlUrl="https://feeds.megaphone.fm/empire" htmlUrl="https://blockworks.co/podcasts/empire/" />
+    <outline text="Excess Returns" title="Excess Returns" type="rss" xmlUrl="https://anchor.fm/s/9a1dfac/podcast/rss" htmlUrl="https://excessreturnspod.com" />
+    <outline text="Fabricated Knowledge (private feed for avicohen03@yahoo.ca)" title="Fabricated Knowledge (private feed for avicohen03@yahoo.ca)" type="rss" xmlUrl="https://api.substack.com/feed/podcast/22108/private/5a8450b2-632a-4420-8883-91d7c8bbff49.rss" htmlUrl="https://www.fabricatedknowledge.com/podcast" />
+    <outline text="Fill The Gap: The Official Podcast of CMT Association" title="Fill The Gap: The Official Podcast of CMT Association" type="rss" xmlUrl="https://rss.buzzsprout.com/1551823.rss" htmlUrl="https://cmtassociation.org/development/podcasts/" />
+    <outline text="First Customers" title="First Customers" type="rss" xmlUrl="https://api.riverside.fm/hosting/izBwDkC4.rss" htmlUrl="https://parisvega.com/first-customers-podcast/" />
+    <outline text="Forward Guidance" title="Forward Guidance" type="rss" xmlUrl="https://feeds.megaphone.fm/forwardguidance" htmlUrl="https://blockworks.co/podcasts/forwardguidance/" />
+    <outline text="Google DeepMind: The Podcast" title="Google DeepMind: The Podcast" type="rss" xmlUrl="https://feeds.simplecast.com/JT6pbPkg" htmlUrl="https://deepmind.com/podcast" />
+    <outline text="Grant's Current Yield Podcast" title="Grant's Current Yield Podcast" type="rss" xmlUrl="https://grantpub.libsyn.com/rss" htmlUrl="http://www.grantspub.com" />
+    <!-- <outline text="Hebrew Podcast by Ulpan integraliah Tel Aviv" title="Hebrew Podcast by Ulpan integraliah Tel Aviv" type="rss" xmlUrl="https://feed.podbean.com/ulpan/feed.xml" htmlUrl="https://ulpan.podbean.com" /> -->
+    <outline text="Hidden Forces" title="Hidden Forces" type="rss" xmlUrl="https://hiddenforces.libsyn.com/rss" htmlUrl="https://www.hiddenforces.io" />
+    <outline text="I, Degen" title="I, Degen" type="rss" xmlUrl="https://feeds.transistor.fm/i-degen" htmlUrl="https://idegen.fm" />
+    <outline text="Into the Bytecode" title="Into the Bytecode" type="rss" xmlUrl="https://feeds.transistor.fm/into-the-bytecode" htmlUrl="https://www.intothebytecode.com" />
+    <outline text="Invest Like the Best with Patrick O'Shaughnessy" title="Invest Like the Best with Patrick O'Shaughnessy" type="rss" xmlUrl="https://feeds.megaphone.fm/CLS2859450455" htmlUrl="https://joincolossus.com/" />
+    <outline text="Know Your Risk Podcast" title="Know Your Risk Podcast" type="rss" xmlUrl="https://www.spreaker.com/show/6436248/episodes/feed" htmlUrl="https://www.spreaker.com/podcast/know-your-risk-radio-with-zach-abraham-chief-investment-officer-bulwark-capital-management--6436248" />
+    <outline text="Latent Space: The AI Engineer Podcast" title="Latent Space: The AI Engineer Podcast" type="rss" xmlUrl="https://feeds.flightcast.com/vgnxzgiwwzwke85ym53fjnzu.xml" htmlUrl="https://www.latent.space/podcast" />
+    <outline text="Lex Fridman Podcast" title="Lex Fridman Podcast" type="rss" xmlUrl="https://lexfridman.com/feed/podcast/" htmlUrl="https://lexfridman.com/" />
+    <outline text="Macro Hive Conversations With Bilal Hafeez" title="Macro Hive Conversations With Bilal Hafeez" type="rss" xmlUrl="https://macrohive.libsyn.com/rss" htmlUrl="https://macrohive.com/" />
+    <outline text="Macro Minutes" title="Macro Minutes" type="rss" xmlUrl="https://feeds.captivate.fm/rbc-macro-minutes/" htmlUrl="https://rbc-macro-minutes.captivate.fm" />
+    <outline text="Macro Mondays" title="Macro Mondays" type="rss" xmlUrl="https://rss.buzzsprout.com/2206288.rss" htmlUrl="https://www.buzzsprout.com/2206288" />
+    <outline text="Macro Musings with David Beckworth" title="Macro Musings with David Beckworth" type="rss" xmlUrl="https://macromusings.libsyn.com/rss" htmlUrl="http://macromarketmusings.blogspot.com/" />
+    <outline text="Macro Voices" title="Macro Voices" type="rss" xmlUrl="https://feed.podbean.com/macrovoices/feed.xml" htmlUrl="https://www.macrovoices.com" />
+    <outline text="Market Misbehavior with David Keller, CMT" title="Market Misbehavior with David Keller, CMT" type="rss" xmlUrl="https://rss.buzzsprout.com/2420291.rss" htmlUrl="https://marketmisbehavior.buzzsprout.com" />
+    <outline text="Masters in Business" title="Masters in Business" type="rss" xmlUrl="https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/4e4cd910-40a1-4619-a5f3-ae2b0012ffff/5873a3cb-298f-40bc-b71f-ae2b0013000d/podcast.rss" htmlUrl="https://www.bloomberg.com/audio/shows" />
+    <outline text="MicroCapClub" title="MicroCapClub" type="rss" xmlUrl="https://anchor.fm/s/fa8b8aa8/podcast/rss" htmlUrl="https://microcapclub.com" />
+    <outline text="Monetary Matters with Jack Farley" title="Monetary Matters with Jack Farley" type="rss" xmlUrl="https://feeds.megaphone.fm/EWWMN1909747317" />
+    <outline text="Moonshots with Peter Diamandis" title="Moonshots with Peter Diamandis" type="rss" xmlUrl="https://feeds.megaphone.fm/DVVTS2890392624" htmlUrl="https://www.diamandis.com/podcast" />
+    <outline text="No Priors: Artificial Intelligence | Technology | Startups" title="No Priors: Artificial Intelligence | Technology | Startups" type="rss" xmlUrl="https://feeds.megaphone.fm/nopriors" />
+    <outline text="Odd Lots" title="Odd Lots" type="rss" xmlUrl="https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/8a94442e-5a74-4fa2-8b8d-ae27003a8d6b/982f5071-765c-403d-969d-ae27003a8d83/podcast.rss" htmlUrl="https://bloomberg.com/podcasts/odd_lots" />
+    <outline text="Ologies with Alie Ward" title="Ologies with Alie Ward" type="rss" xmlUrl="https://feeds.simplecast.com/FO6kxYGj" htmlUrl="https://www.siriusxm.com" />
+    <outline text="Peter Attia" title="Peter Attia" type="rss" xmlUrl="https://peterattiamd.com/feed/" htmlUrl="https://peterattiamd.com/" />
+    <outline text="Pitch The PM" title="Pitch The PM" type="rss" xmlUrl="https://anchor.fm/s/fe83fd34/podcast/rss" htmlUrl="https://pitchthepm.com/" />
+    <outline text="Reinvent Money" title="Reinvent Money" type="rss" xmlUrl="https://anchor.fm/s/c25d6818/podcast/rss" htmlUrl="https://www.youtube.com/c/ReinventMoneyVideos/featured" />
+    <outline text="Resolve Riffs Investment Podcast" title="Resolve Riffs Investment Podcast" type="rss" xmlUrl="https://feeds.captivate.fm/resolve-gestalt-university/" htmlUrl="https://investresolve.com/" />
+    <outline text="Run the Numbers" title="Run the Numbers" type="rss" xmlUrl="https://api.substack.com/feed/podcast/230760/s/107199.rss" htmlUrl="https://cjgustafson.substack.com/s/run-the-numbers" />
+    <outline text="Supply Shock" title="Supply Shock" type="rss" xmlUrl="https://feeds.megaphone.fm/onthemargin" htmlUrl="blockworks.co/podcasts" />
+    <outline text="Supply Shock" title="Supply Shock" type="rss" xmlUrl="https://feeds.megaphone.fm/supplyshock" htmlUrl="blockworks.co/podcasts" />
+    <outline text="TalkRL: The Reinforcement Learning Podcast" title="TalkRL: The Reinforcement Learning Podcast" type="rss" xmlUrl="https://feeds.transistor.fm/talkrl" htmlUrl="https://www.talkrl.com" />
+    <outline text="The a16z Show" title="The a16z Show" type="rss" xmlUrl="https://feeds.simplecast.com/JGE3yC0V" htmlUrl="https://a16z.simplecast.com" />
+    <outline text="The ACID Capitalist Podcast" title="The ACID Capitalist Podcast" type="rss" xmlUrl="https://rss.buzzsprout.com/1017043.rss" htmlUrl="https://hughhendry.com" />
+    <!-- <outline text="The Anjunadeep Edition" title="The Anjunadeep Edition" type="rss" xmlUrl="http://static.anjunadeep.com/edition/podcast.xml" htmlUrl="http://anjunadeep.com/edition/podcast.xml" /> -->
+    <outline text="The Bitcoin Layer" title="The Bitcoin Layer" type="rss" xmlUrl="https://app.mysoundwise.com/rss/1665708396190s" htmlUrl="https://mysoundwise.com/soundcasts/1665708396190s" />
+    <outline text="The Canadian Investor" title="The Canadian Investor" type="rss" xmlUrl="https://www.omnycontent.com/d/playlist/d75d2ff4-a4dd-4a19-bcb1-ad35013dfc83/33a9e70f-55b1-4f79-86a9-ad35013e9672/4ad0a8bc-f5dd-4c63-b6af-ad35013e9680/podcast.rss" htmlUrl="http://stratosphereinvesting.com" />
+    <outline text="The Canadian Real Estate Investor" title="The Canadian Real Estate Investor" type="rss" xmlUrl="https://www.omnycontent.com/d/playlist/d75d2ff4-a4dd-4a19-bcb1-ad35013dfc83/1d7b066c-9af2-431a-bea7-aecd01493da3/69cdac4f-3b2e-45b4-ae6f-aecd0152873d/podcast.rss" htmlUrl="https://thecanadianinvestorpodcast.com/" />
+    <outline text="The Circuit" title="The Circuit" type="rss" xmlUrl="https://feeds.transistor.fm/the-circuit" htmlUrl="http://thecircuit.fm" />
+    <outline text="The Compound and Friends" title="The Compound and Friends" type="rss" xmlUrl="https://feed.pippa.io/public/shows/5c1d3a90e6bc692c38b2221f" htmlUrl="https://thereformedbroker.com/podcast/" />
+    <outline text="The Defiant - DeFi Podcast" title="The Defiant - DeFi Podcast" type="rss" xmlUrl="https://anchor.fm/s/1bee9344/podcast/rss" htmlUrl="https://thedefiant.io/" />
+    <outline text="The Delphi Podcast" title="The Delphi Podcast" type="rss" xmlUrl="https://anchor.fm/s/89f4aa68/podcast/rss" htmlUrl="https://twitter.com/Shaughnessy119" />
+    <outline text="The Ethics Podcast - With Rabbi Yaakov Wolbe" title="The Ethics Podcast - With Rabbi Yaakov Wolbe" type="rss" xmlUrl="https://rabbiwolbe.com/feed/pirkeiavos/" htmlUrl="https://rabbiwolbe.com" />
+    <outline text="The First 100 | How Founders Acquired their First 100 Customers | Product-Market Fit" title="The First 100 | How Founders Acquired their First 100 Customers | Product-Market Fit" type="rss" xmlUrl="https://rss.buzzsprout.com/2034574.rss" htmlUrl="https://thefirst100.buzzsprout.com" />
+    <outline text="The Grant Williams Podcast" title="The Grant Williams Podcast" type="rss" xmlUrl="https://feed.podbean.com/ttmygh/feed.xml" htmlUrl="https://www.grant-williams.com" />
+    <outline text="The Julia La Roche Show" title="The Julia La Roche Show" type="rss" xmlUrl="https://anchor.fm/s/41aa63c4/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/julia-la-roche" />
+    <outline text="The Macro Trading Floor" title="The Macro Trading Floor" type="rss" xmlUrl="https://feeds.megaphone.fm/ALFINVESTMENTSTRATEGYBV2974145286" />
+    <outline text="The MAD Podcast with Matt Turck" title="The MAD Podcast with Matt Turck" type="rss" xmlUrl="https://anchor.fm/s/f2ee4948/podcast/rss" htmlUrl="https://firstmark.com/events/data-driven/" />
+    <outline text="The Master Investor Podcast with Wilfred Frost" title="The Master Investor Podcast with Wilfred Frost" type="rss" xmlUrl="https://feed.podbean.com/TheMasterInvestorPodcast/feed.xml" htmlUrl="https://TheMasterInvestorPodcast.podbean.com" />
+    <outline text="The Meb Faber Show - Better Investing" title="The Meb Faber Show - Better Investing" type="rss" xmlUrl="https://feeds.megaphone.fm/TIFM6133783130" htmlUrl="https://www.themebfabershow.com/" />
+    <!-- <outline text="The Parsha Podcast - With Rabbi Yaakov Wolbe" title="The Parsha Podcast - With Rabbi Yaakov Wolbe" type="rss" xmlUrl="https://rabbiwolbe.com/feed/parsha/" htmlUrl="https://rabbiwolbe.com" /> -->
+    <outline text="The Pomp Podcast" title="The Pomp Podcast" type="rss" xmlUrl="https://anchor.fm/s/b4841110/podcast/rss" htmlUrl="https://www.anthonypompliano.com/" />
+    <outline text="The Real Eisman Playbook" title="The Real Eisman Playbook" type="rss" xmlUrl="https://feeds.megaphone.fm/GBLL9435201326" htmlUrl="https://realeismanplaybook.podbean.com" />
+    <outline text="The Rollup" title="The Rollup" type="rss" xmlUrl="https://anchor.fm/s/f3eccd24/podcast/rss" htmlUrl="https://therollup.co" />
+    <outline text="The Security Analysis Podcast" title="The Security Analysis Podcast" type="rss" xmlUrl="https://api.substack.com/feed/podcast/263142.rss" htmlUrl="https://www.securityanalysis.org/podcast" />
+    <outline text="The Sherman Show™" title="The Sherman Show™" type="rss" xmlUrl="https://feeds.soundcloud.com/users/soundcloud:users:307683132/sounds.rss" htmlUrl="http://doubleline.com/" />
+    <outline text="The Sweaty Startup" title="The Sweaty Startup" type="rss" xmlUrl="https://sweatystartup.libsyn.com/rss" htmlUrl="http://sweatystartup.com/" />
+    <outline text="The Twenty Minute VC (20VC): Venture Capital | Startup Funding | The Pitch" title="The Twenty Minute VC (20VC): Venture Capital | Startup Funding | The Pitch" type="rss" xmlUrl="https://thetwentyminutevc.libsyn.com/rss" htmlUrl="http://www.thetwentyminutevc.com/" />
+    <outline text="The TWIML AI Podcast (formerly This Week in Machine Learning &amp; Artificial Intelligence)" title="The TWIML AI Podcast (formerly This Week in Machine Learning &amp; Artificial Intelligence)" type="rss" xmlUrl="https://feeds.megaphone.fm/MLN2155636147" htmlUrl="https://twimlai.com" />
+    <outline text="Thoughtful Money with Adam Taggart" title="Thoughtful Money with Adam Taggart" type="rss" xmlUrl="https://anchor.fm/s/eca7b164/podcast/rss" htmlUrl="https://thoughtfulmoney.com/" />
+    <outline text="Thoughts on the Market" title="Thoughts on the Market" type="rss" xmlUrl="https://rss.art19.com/thoughts-on-the-market" htmlUrl="https://art19.com/shows/thoughts-on-the-market" />
+    <outline text="Top Traders Unplugged" title="Top Traders Unplugged" type="rss" xmlUrl="https://feeds.captivate.fm/top-traders-unplugged/" htmlUrl="https://www.toptradersunplugged.com" />
+    <!-- <outline text="TORCH Insider Podcast" title="TORCH Insider Podcast" type="rss" xmlUrl="https://subscribers.transistor.fm/bc93a53a3ec875" htmlUrl="http://linktr.ee/torchweb" /> -->
+    <outline text="Transistor Radio" title="Transistor Radio" type="rss" xmlUrl="https://anchor.fm/s/7b86e554/podcast/rss" htmlUrl="https://podcasters.spotify.com/pod/show/doug-dylan" />
+    <outline text="UBS On-Air: Market Moves" title="UBS On-Air: Market Moves" type="rss" xmlUrl="https://secure.ubs.com/us/en/wealth-management/misc/researchpodcast/_jcr_content/mainpar/toplevelgrid/col1/responsivepodcast_28.itunes.xml" htmlUrl="https://www.ubs.com/us/en/wealth-management/misc/researchpodcast.html" />
+    <outline text="Uncommon Core 2.0" title="Uncommon Core 2.0" type="rss" xmlUrl="https://anchor.fm/s/2578d5a0/podcast/rss" htmlUrl="https://www.ucc2.xyz/" />
+    <outline text="Understanding Semiconductors: Modern Metrology from Lab to Fab" title="Understanding Semiconductors: Modern Metrology from Lab to Fab" type="rss" xmlUrl="https://www.spreaker.com/show/5718643/episodes/feed" htmlUrl="https://www.spreaker.com/show/understanding-semiconductors-modern-metr" />
+    <outline text="UpOnly: Chats with Crypto Experts" title="UpOnly: Chats with Crypto Experts" type="rss" xmlUrl="https://feeds.simplecast.com/puPuLj25" htmlUrl="https://uponly.tv" />
+    <outline text="Value Investing with Legends" title="Value Investing with Legends" type="rss" xmlUrl="https://valueinvestingwithlegends.libsyn.com/rss" htmlUrl="http://valueinvestingwithlegends.com" />
+    <outline text="Wall Street Breakfast" title="Wall Street Breakfast" type="rss" xmlUrl="https://www.spreaker.com/show/5725002/episodes/feed" htmlUrl="https://seekingalpha.com/wsb" />
+    <outline text="WEALTHTRACK" title="WEALTHTRACK" type="rss" xmlUrl="https://feeds.feedburner.com/trillianmedia/JVWE" htmlUrl="http://www.wealthtrack.com" />
+    <outline text="What Should I Do With My Money?" title="What Should I Do With My Money?" type="rss" xmlUrl="https://rss.art19.com/what-should-i-do-with-my-money" htmlUrl="https://art19.com/shows/what-should-i-do-with-my-money" />
+    <outline text="What's Your Number?" title="What's Your Number?" type="rss" xmlUrl="https://feeds.simplecast.com/J4dksgZd" htmlUrl="https://whats-your-number.simplecast.com" />
+    <outline text="What's Your Problem?" title="What's Your Problem?" type="rss" xmlUrl="https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/32c25e85-1667-4acb-99fd-ae3c0021f33e/beacef48-19d2-4f52-b9e8-ae3c0021f347/podcast.rss" htmlUrl="https://www.pushkin.fm/" />
+  </body>
+</opml>
