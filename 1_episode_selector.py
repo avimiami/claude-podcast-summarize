@@ -265,25 +265,26 @@ def main():
 
             st.caption(f"Showing {len(df)} episodes")
 
-            # Initialize selections in session state if not exists
+            # Initialize selections in session state if not exists (track as set of audio_urls)
             if 'selections' not in st.session_state:
-                st.session_state.selections = {}
+                st.session_state.selections = set()
 
-            # Add a selection column if not exists in original dataframe
-            if 'selected' not in st.session_state.episodes_df.columns:
-                st.session_state.episodes_df = st.session_state.episodes_df.copy()
-                st.session_state.episodes_df.insert(0, 'selected', False)
+            # Track the data key to detect when filter/sort changes
+            data_key = f"{len(df)}_{search}_{sort_by}_{order}"
 
-            # Apply selections from session state to display dataframe
-            df_display = df.copy()
-            if 'selected' not in df_display.columns:
+            # Check if this is a new data view (filter/sort changed)
+            is_new_data_view = ('last_data_key' not in st.session_state or
+                                st.session_state.last_data_key != data_key)
+
+            if is_new_data_view:
+                # Data changed: rebuild display with saved selections
+                st.session_state.last_data_key = data_key
+                df_display = df.copy()
+                df_display.insert(0, 'selected', df_display['audio_url'].isin(st.session_state.selections).astype(bool))
+            else:
+                # Same data: add empty selected column, let widget maintain state
+                df_display = df.copy()
                 df_display.insert(0, 'selected', False)
-
-            # Restore previous selections
-            for idx, row in df_display.iterrows():
-                audio_url = row.get('audio_url', '')
-                if audio_url in st.session_state.selections:
-                    df_display.at[idx, 'selected'] = st.session_state.selections[audio_url]
 
             # Display table with checkbox selection
             edited_df = st.data_editor(
@@ -322,29 +323,31 @@ def main():
                 key="episode_editor"
             )
 
-            # Save selections to session state
-            for idx, row in edited_df.iterrows():
-                audio_url = row.get('audio_url', '')
-                st.session_state.selections[audio_url] = row.get('selected', False)
-
-            # Get selected rows
+            # Get selected rows from edited dataframe
             selected_episodes = edited_df[edited_df['selected'] == True]
+
+            # Update session state for persistence across filter/sort operations
+            # Only update if the set of selections actually changed (prevents loops)
+            new_selections = set(selected_episodes['audio_url'])
+            if 'last_known_selections' not in st.session_state:
+                st.session_state.last_known_selections = set()
+
+            if new_selections != st.session_state.last_known_selections:
+                st.session_state.selections = new_selections
+                st.session_state.last_known_selections = new_selections
 
             # Show selected episodes section
             st.divider()
 
             if not selected_episodes.empty:
-                st.subheader(f"✅ Selected Episodes: {len(selected_episodes)}")
+                st.subheader(f"Selected Episodes: {len(selected_episodes)}")
 
-                # Show selected episodes in a separate table
-                st.dataframe(
-                    selected_episodes[['podcast_name', 'episode_title', 'publish_date']],
-                    use_container_width=True,
-                    hide_index=True
-                )
+                # Simple text display (no flickering dataframe)
+                for _, row in selected_episodes.iterrows():
+                    st.text(f"{row['podcast_name']} - {row['episode_title']} ({row['publish_date']})")
             else:
-                st.subheader("✅ Selected Episodes: 0")
-                st.info("👆 Check the boxes in the table above to select episodes")
+                st.subheader("Selected Episodes: 0")
+                st.info("Check the boxes in the table above to select episodes")
 
             # Export section
             st.divider()
