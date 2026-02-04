@@ -28,24 +28,68 @@ def load_prompt_templates():
         return yaml.safe_load(f)
 
 
-def get_transcripts():
-    """Get all transcript files from transcripts folder."""
+def get_transcripts(date_filter=None):
+    """
+    Get all transcript files from transcripts folder.
+    Handles both old structure (transcripts/podcast/episode.txt)
+    and new date-based structure (transcripts/YYYY-MM-DD/podcast/episode.txt)
+
+    Args:
+        date_filter: Optional date string (YYYY-MM-DD) to filter transcripts.
+                    If provided, only processes transcripts from that date folder.
+    """
     transcripts_path = Path("transcripts")
     if not transcripts_path.exists():
         return []
 
     transcripts = []
-    for podcast_folder in transcripts_path.iterdir():
-        if podcast_folder.is_dir():
-            for transcript_file in podcast_folder.iterdir():
-                if transcript_file.is_file() and transcript_file.suffix == '.txt':
-                    # Skip metadata files
-                    if not transcript_file.stem.endswith('_metadata'):
-                        transcripts.append({
-                            'podcast_name': podcast_folder.name,
-                            'episode_title': transcript_file.stem,
-                            'path': transcript_file
-                        })
+
+    # First, check if there are date folders (new structure)
+    has_date_folders = False
+    for item in transcripts_path.iterdir():
+        if item.is_dir() and item.name.match(r'\d{4}-\d{2}-\d{2}'):
+            has_date_folders = True
+            break
+
+    if has_date_folders:
+        # New structure: transcripts/YYYY-MM-DD/podcast_name/episode.txt
+        for date_folder in sorted(transcripts_path.iterdir(), reverse=True):
+            if not date_folder.is_dir():
+                continue
+            # Check if it's a date folder
+            if not date_folder.name.match(r'\d{4}-\d{2}-\d{2}'):
+                continue
+
+            # Apply date filter if specified
+            if date_filter and date_folder.name != date_filter:
+                continue
+
+            for podcast_folder in date_folder.iterdir():
+                if podcast_folder.is_dir():
+                    for transcript_file in podcast_folder.iterdir():
+                        if transcript_file.is_file() and transcript_file.suffix == '.txt':
+                            # Skip metadata files
+                            if not transcript_file.stem.endswith('_metadata'):
+                                transcripts.append({
+                                    'podcast_name': podcast_folder.name,
+                                    'episode_title': transcript_file.stem,
+                                    'path': transcript_file,
+                                    'date': date_folder.name
+                                })
+    else:
+        # Old structure: transcripts/podcast_name/episode.txt (backward compatibility)
+        for podcast_folder in transcripts_path.iterdir():
+            if podcast_folder.is_dir():
+                for transcript_file in podcast_folder.iterdir():
+                    if transcript_file.is_file() and transcript_file.suffix == '.txt':
+                        # Skip metadata files
+                        if not transcript_file.stem.endswith('_metadata'):
+                            transcripts.append({
+                                'podcast_name': podcast_folder.name,
+                                'episode_title': transcript_file.stem,
+                                'path': transcript_file,
+                                'date': None
+                            })
 
     return transcripts
 
@@ -165,6 +209,12 @@ def main():
         help="Category to use for summarization (global_macro, AI, crypto, tech, general)"
     )
     parser.add_argument(
+        "--date",
+        type=str,
+        default=None,
+        help="Filter transcripts by date (YYYY-MM-DD format). If not specified, processes all transcripts."
+    )
+    parser.add_argument(
         "--model",
         type=str,
         default=None,
@@ -173,6 +223,8 @@ def main():
     args = parser.parse_args()
 
     print(f"Podcast Summarization Script - Category: {args.category}")
+    if args.date:
+        print(f"Date Filter: {args.date}")
     print("=" * 50)
 
     # Load configuration
@@ -220,10 +272,14 @@ def main():
     print(f"Using model: {model}")
 
     # Get all transcripts
-    transcripts = get_transcripts()
+    transcripts = get_transcripts(date_filter=args.date)
     if not transcripts:
-        print("Error: No transcripts found in transcripts/ folder")
-        print("Please run Script 2 (2_transcribe.py) first")
+        if args.date:
+            print(f"Error: No transcripts found in transcripts/ folder for date {args.date}")
+            print(f"Available dates can be found in: {Path('transcripts').absolute()}")
+        else:
+            print("Error: No transcripts found in transcripts/ folder")
+            print("Please run Script 2 (2_transcribe.py) first")
         return
 
     print(f"\nFound {len(transcripts)} transcripts to process")
@@ -306,7 +362,11 @@ Model: {provider}/{model}
     print(f"  Successfully summarized: {success_count}")
     print(f"  Errors: {error_count}")
     print(f"  Total: {len(transcripts)}")
-    print(f"\nSummaries saved to: {Path('summaries').absolute() / category}")
+
+    if args.date:
+        print(f"\nSummaries saved to: {Path('summaries').absolute() / category / args.date}")
+    else:
+        print(f"\nSummaries saved to: {Path('summaries').absolute() / category}")
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 Script 2: Download & Transcribe
 Reads CSV from Script 1, downloads audio files, and transcribes using Deep Infra Whisper API.
 Run with: python 2_transcribe.py
+       or: python 2_transcribe.py --csv path/to/your.csv
 """
 
 import pandas as pd
@@ -17,6 +18,7 @@ from utils import (
 from datetime import datetime
 import json
 import os
+import argparse
 
 
 def download_audio_file(audio_url, download_path):
@@ -78,6 +80,18 @@ def create_metadata_file(transcript_path, metadata):
 
 
 def main():
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description="Transcribe podcast episodes from CSV file"
+    )
+    parser.add_argument(
+        '--csv',
+        type=str,
+        default='selected_episodes.csv',
+        help='Path to CSV file containing episode information (default: selected_episodes.csv)'
+    )
+    args = parser.parse_args()
+
     print("Podcast Transcription Script")
     print("=" * 50)
 
@@ -90,11 +104,14 @@ def main():
         return
 
     # Check for CSV file
-    csv_path = Path("selected_episodes.csv")
+    csv_path = Path(args.csv)
     if not csv_path.exists():
         print(f"Error: {csv_path} not found")
         print("Please run Script 1 (1_episode_selector.py) first to generate the CSV file")
+        print("Or provide a custom CSV path: python 2_transcribe.py --csv path/to/your.csv")
         return
+
+    print(f"Using CSV file: {csv_path}")
 
     # Create temporary download directory
     temp_dir = Path("temp_audio")

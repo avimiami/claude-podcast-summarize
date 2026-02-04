@@ -41,8 +41,10 @@ def create_transcript_path(podcast_name, episode_title):
     """
     Create full path for a transcript file.
     Ensures directory structure exists.
+    Uses date-based organization: transcripts/YYYY-MM-DD/podcast_name/episode.txt
     """
-    base_path = Path("transcripts")
+    today = datetime.now().strftime("%Y-%m-%d")
+    base_path = Path("transcripts") / today
     podcast_folder = base_path / sanitize_filename(podcast_name)
     podcast_folder.mkdir(parents=True, exist_ok=True)
     return podcast_folder / f"{sanitize_filename(episode_title)}.txt"
@@ -52,10 +54,11 @@ def create_summary_path(category, podcast_name, episode_title):
     """
     Create full path for a summary file.
     Ensures directory structure exists.
+    Uses date-based organization: summaries/category/YYYY-MM-DD/podcast_name/episode_summary.txt
     """
-    base_path = Path("summaries")
-    category_folder = base_path / sanitize_filename(category)
-    podcast_folder = category_folder / sanitize_filename(podcast_name)
+    today = datetime.now().strftime("%Y-%m-%d")
+    base_path = Path("summaries") / sanitize_filename(category) / today
+    podcast_folder = base_path / sanitize_filename(podcast_name)
     podcast_folder.mkdir(parents=True, exist_ok=True)
     return podcast_folder / f"{sanitize_filename(episode_title)}_summary.txt"
 
